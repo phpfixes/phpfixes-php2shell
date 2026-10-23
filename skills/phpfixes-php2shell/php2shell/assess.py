@@ -28,11 +28,14 @@ import sys
 # Read-only means read-only: do not leave a __pycache__ folder inside the skill either.
 sys.dont_write_bytecode = True
 
+HERE = Path(__file__).resolve().parent
+# Isolated Python omits the script directory; load only this skill's bundled helper.
+sys.path.insert(0, str(HERE))
+
 from version_compare import (compare_php_versions, deb_split, deb_version_compare, php_branch,
                              rpm_split)
 
-VERSION = "1.0.2"
-HERE = Path(__file__).resolve().parent
+VERSION = "1.0.3"
 FACTS = json.loads((HERE.parent / "data" / "advisories.json").read_text(encoding="utf-8"))
 UTC = dt.timezone.utc
 
@@ -455,7 +458,7 @@ def workers_differ(runtime):
     running = runtime["running"]
     differs = ((running.get("php_version") and running["php_version"] != runtime.get("php_version"))
                or (running.get("package_version")
-                   and running["package_version"] != runtime.get("package", {}).get("version")))
+                   and running["package_version"] != (runtime.get("package") or {}).get("version")))
     return bool(differs) or running["binary_identity"] == "deleted-or-different"
 
 

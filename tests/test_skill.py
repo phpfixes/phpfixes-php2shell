@@ -88,6 +88,41 @@ class AssessmentTests(unittest.TestCase):
         self.assertEqual(result["runtimes"][0]["installed_assessment"], "AFFECTED")
         self.assertEqual(result["proposed_plan"], "patch")
 
+    def test_a_running_package_version_without_an_installed_package_stays_unknown(self):
+        for omitted in (False, True):
+            for origin, version in (("distro", "8.3.6"), ("upstream", "8.3.36")):
+                with self.subTest(omitted=omitted, origin=origin):
+                    data = with_build_provenance(evidence())
+                    runtime = data["runtimes"][0]
+                    runtime.update(origin=origin, php_version=version, package=None)
+                    if omitted:
+                        del runtime["package"]
+                    runtime["running"].update(php_version=version, package_version=version,
+                                               binary_identity="matches-installed")
+                    report = self.report(data)
+                    row = report["runtimes"][0]
+                    self.assertEqual(row["running_assessment"], "UNKNOWN")
+                    self.assertEqual(report["proposed_plan"], "scan")
+                    self.assertTrue(row["needed_evidence"])
+                    expected = "FIXED_EVIDENCE" if origin == "upstream" else "UNKNOWN"
+                    self.assertEqual(row["installed_assessment"], expected)
+
+    def test_isolated_python_runs_the_bundled_helper_and_reads_evidence(self):
+        with tempfile.TemporaryDirectory() as folder:
+            for args in (("--version",), ("--evidence", str(SKILL / "examples/mixed-workers.json"),
+                                          "--format", "json")):
+                process = subprocess.run(
+                    [sys.executable, "-I", str(SKILL / "php2shell/assess.py")] + list(args),
+                    cwd=folder, universal_newlines=True, stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE)
+                self.assertEqual(process.returncode, 0, process.stderr)
+                if args == ("--version",):
+                    self.assertEqual(process.stdout.strip(), assess.VERSION)
+                else:
+                    report = json.loads(process.stdout)
+                    self.assertEqual(report["skill_version"], assess.VERSION)
+                    self.assertEqual(report["runtimes"][0]["running_assessment"], "AFFECTED")
+
     def test_each_primary_checked_debian_release_is_judged_by_its_own_fixed_revision(self):
         for os_version, branch, fixed in (("12", "8.2", "8.2.35-1~deb12u1"),
                                           ("13", "8.4", "8.4.27-1~deb13u1")):

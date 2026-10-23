@@ -4,7 +4,7 @@ A read-only skill that reads the PHP evidence you already have and tells you whe
 
 PHP2Shell is the name used for two PHP remote-code-execution bugs disclosed on 2026-10-21: CVE-2026-109618 ("RCE via OOM corruption") and CVE-2026-109619 ("RCE via stale global state"). php.net says configuration mitigations are only partial; updating to a fixed build is required for a complete fix. Given a `php -v`, a package version and a process list that you paste or save, this skill says whether that PHP is fixed, still affected, or not yet knowable from what you supplied.
 
-Version 1.0.2. The bundled advisory facts were checked on 2026-10-22. A `FIXED_EVIDENCE` verdict is offered only while those facts are at most 14 days old, so the last day this release can give one is 2026-11-05 (UTC). After that it says `UNKNOWN` until the facts are refreshed.
+Version 1.0.3. The bundled advisory facts were checked on 2026-10-22. A `FIXED_EVIDENCE` verdict is offered only while those facts are at most 14 days old, so the last day this release can give one is 2026-11-05 (UTC). After that it says `UNKNOWN` until the facts are refreshed.
 
 ## A 10-second example
 
@@ -27,7 +27,7 @@ python3 php2shell/assess.py --evidence examples/mixed-workers.json
 Once the records are more than 24 hours old (after 2026-10-23T12:00Z), and until 2026-11-05 (UTC), it prints:
 
 ```text
-PHPFixes PHP2Shell assessment 1.0.2
+PHPFixes PHP2Shell assessment 1.0.3
 Scope: Synthetic example: fixed package on disk, stale running workers.
 Assessment covers only supplied records. It does not establish a complete server inventory, internet exposure, absence of compromise, or whole-server safety.
 
@@ -131,7 +131,7 @@ Returning `False` hands the package to the next rule, where a build that already
 
 `deb_version_compare` follows dpkg's ordering rules, reimplemented in `php2shell/version_compare.py`: a `~` sorts before everything, even the end of the string, so `8.2.35-1~deb12u1` is lower than `8.2.35-1`, and an epoch (`1:`) outranks everything after it. Plain PHP release numbers use PHP's own rule, where `8.5.12RC1` sorts below `8.5.12`.
 
-These are the fixed versions bundled in 1.0.2, each from a primary source, all checked on 2026-10-22:
+These are the fixed versions bundled in 1.0.3, each from a primary source, all checked on 2026-10-22:
 
 | Stream | Package | Fixed in | Source |
 | --- | --- | --- | --- |
@@ -160,7 +160,7 @@ Then use `/phpfixes:phpfixes-php2shell`, or just ask about PHP2Shell and let Cla
 **Codex.** Inside Codex:
 
 ```text
-$skill-installer install https://github.com/phpfixes/phpfixes-php2shell/tree/v1.0.2/skills/phpfixes-php2shell
+$skill-installer install https://github.com/phpfixes/phpfixes-php2shell/tree/v1.0.3/skills/phpfixes-php2shell
 ```
 
 Then use `$phpfixes-php2shell` or pick it from `/skills`. If it does not appear, restart Codex.
@@ -168,7 +168,7 @@ Then use `$phpfixes-php2shell` or pick it from `/skills`. If it does not appear,
 **Plain Python.** No assistant required; the checker is stdlib-only and runs on Python 3.9 or newer:
 
 ```bash
-git clone --depth 1 --branch v1.0.2 https://github.com/phpfixes/phpfixes-php2shell && cd phpfixes-php2shell/skills/phpfixes-php2shell && python3 php2shell/assess.py --evidence examples/mixed-workers.json
+git clone --depth 1 --branch v1.0.3 https://github.com/phpfixes/phpfixes-php2shell && cd phpfixes-php2shell/skills/phpfixes-php2shell && python3 php2shell/assess.py --evidence examples/mixed-workers.json
 ```
 
 To install by hand instead, copy the `skills/phpfixes-php2shell/` folder into `.claude/skills/` (Claude Code) or `.agents/skills/` (Codex). A copied skill is invoked as `/phpfixes-php2shell` or `$phpfixes-php2shell`. The [releases page](https://github.com/phpfixes/phpfixes-php2shell/releases) has the same folder as two ZIPs, one per assistant, with `SHA256SUMS`; check a ZIP against its line first (`shasum -a 256` on macOS, `sha256sum` on Linux).
@@ -192,7 +192,7 @@ Codex, a manual copy and the release ZIPs install only `skills/phpfixes-php2shel
 
 ## Tests
 
-From the repository root, `python3 -m unittest` runs every test. They pass on Python 3.9.6 and 3.14.3 on macOS, run on 2026-10-23. `.github/workflows/tests.yml` is set up to run them on Python 3.9, 3.12 and 3.14 for every push and pull request. As of 2026-10-23, the Claude Code and Codex install commands have been tried only against a local copy of this repository, and none of the commands has been run against the published one.
+From the repository root, `python3 -m unittest` runs every test. The release checks also run the helper with `python3 -I`, which isolates Python from user settings and the working directory. `.github/workflows/tests.yml` runs tests on Python 3.9, 3.12 and 3.14 for every push and pull request. Published 1.0.2 passed that matrix. Its GitHub clone and Claude Code plugin installs were tested on 2026-10-23; the Codex installer was tested against a local archive of that release. Version 1.0.3 has separate release checks; those earlier installation results apply to 1.0.2.
 
 ## License and attribution
 

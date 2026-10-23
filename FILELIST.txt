@@ -1,14 +1,14 @@
-# FILELIST for phpfixes-php2shell 1.0.2
+# FILELIST for phpfixes-php2shell 1.0.3
 # Every file in this repository except FILELIST.txt itself.
 # Columns: SHA-256, size in bytes, git file mode, path. Separator: two spaces.
 94fed3127626790f1d83a0be218f399f8db4fe504cae527850ca7ed938d0bfd3  15040  100644  .claude-plugin/icon.png
 2cfc2450d19e7ebd14440c58c1c3f9e47ecbbad6aeb2d5d864d6a1791c2f3582  912  100644  .claude-plugin/marketplace.json
-109e30b2faf819e230eefb585e2bfa71304e20b709788ef1aa77f77dd5104fbf  736  100644  .claude-plugin/plugin.json
+29980004bbe990f6b51ed3e928499270d47208749ec3da9a449ddf7c1d9a78a2  736  100644  .claude-plugin/plugin.json
 0f18b0b904fc372ef085d278fe0510eda13ea2c7db74dd1c690dd610cb941724  521  100644  .github/workflows/tests.yml
 fa5b2d4433b835933b22140e01833a4972a0ee8532d76951286e3dd071994af0  33  100644  .gitignore
-0ae4d8f3a1175302901d1baffb315211e43879e60335e5d31bd4e2ab29b81787  1745  100644  CHANGELOG.md
+9fc43a9fb6897a14afb94f737c1c3639c91c390e71e07baf7cc147dbbb6508d8  2325  100644  CHANGELOG.md
 b05e9195d335942d558256ff8f772ebc034f915c3e8ec2d4fa013501ebd9cfbd  1070  100644  LICENSE
-8e82d55fa7e3f35316621d7f005b0aab0c941e8790857af3d24c9d70e6cabcc4  16410  100644  README.md
+7f00d886bc68b4746f8a944aa90030fb54112d70f3b7eae5630a796e28657875  16549  100644  README.md
 3158eaaa950e83d240000b8a78f4bdef77161762933769808c371c7579c52657  1583  100644  SECURITY.md
 b05e9195d335942d558256ff8f772ebc034f915c3e8ec2d4fa013501ebd9cfbd  1070  100644  skills/phpfixes-php2shell/LICENSE.txt
 852947724e1f1f0f46e5011cf1ec984dfe8113a10f0f9c69b25f456d61161c87  5673  100644  skills/phpfixes-php2shell/POLICY.md
@@ -21,8 +21,8 @@ b05e9195d335942d558256ff8f772ebc034f915c3e8ec2d4fa013501ebd9cfbd  1070  100644  
 d37f59e70f226c0c791dae1354c5e3d3854dc7a2998371996848ed502865cd5e  759  100644  skills/phpfixes-php2shell/examples/cli-only.json
 fe1b0caf0711c00f91a82e7cc6330da274185ffeec2feaa643e8709645f3439d  1791  100644  skills/phpfixes-php2shell/examples/mixed-workers.json
 4783ac0e36c9b2f843848740c751a2928c616049f33c0cec8852dce8cb753f29  1810  100644  skills/phpfixes-php2shell/examples/ubuntu-backport.json
-a749f31a2e7ff1d6af0433a1a2566efa86376a3f21c9873566445d718a4dce8d  39889  100644  skills/phpfixes-php2shell/php2shell/assess.py
+a7ee274270686c4e313b735589d4774553adf35f9d90a336d6b88299969bec22  40009  100644  skills/phpfixes-php2shell/php2shell/assess.py
 f86641bc3eff091b45e15d5f5496d70090a5a88d810c693d9b063cd309b02d3d  3884  100644  skills/phpfixes-php2shell/php2shell/version_compare.py
 6159904dbd7cb80e8a8b7a42a192199527fcf9ae96f3545ecc3adf082929a823  83  100644  tests/__init__.py
 16d51ceeda6a0783c6a8438bf3914decbbd97e435c38d41e26fbfb93d585bc66  9442  100644  tests/test_repo.py
-1139dc579f2c876920a9f99b72f19203d4a6eaa61e2306706281b6050e18c157  22188  100644  tests/test_skill.py
+c04e332bb28ad0b6d31bff6e8970300056dca42bf10147b9c349e40853eb0172  24379  100644  tests/test_skill.py
