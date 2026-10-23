@@ -1,0 +1,135 @@
+{
+  "title": "PHPFixes PHP2Shell sources",
+  "facts_as_of": "2026-10-22",
+  "sources": [
+    {
+      "title": "Build skills",
+      "url": "https://learn.chatgpt.com/docs/build-skills",
+      "checked_date": "2026-10-22",
+      "confirmed_facts": [
+        "Repository skills use .agents/skills/<name>/SKILL.md. User skills use ~/.agents/skills.",
+        "Codex CLI and IDE support /skills selection and $skill-name invocation. Skills can also match requests automatically.",
+        "A folder contains SKILL.md plus optional scripts, references and assets. Changes are detected automatically; restart if a change does not appear."
+      ]
+    },
+    {
+      "title": "Extend Claude with skills",
+      "url": "https://code.claude.com/docs/en/skills",
+      "checked_date": "2026-10-22",
+      "confirmed_facts": [
+        "Project skills use .claude/skills/<name>/SKILL.md. Personal skills use ~/.claude/skills/<name>/SKILL.md.",
+        "Invoke a project or personal skill as /skill-name. Automatic selection is also supported.",
+        "Project skill folders in parent directories are checked up to the repository root. Supporting files may be bundled in a skill folder."
+      ]
+    },
+    {
+      "title": "Claude Code command-line help, a local install of this repository, and its skill-name rule",
+      "tool": "Claude Code 2.1.308",
+      "checked_date": "2026-10-23",
+      "method": "Ran claude plugin marketplace --help and claude plugin install --help, then claude plugin marketplace add on a local copy of this repository, claude plugin install phpfixes@phpfixes and claude plugin details phpfixes@phpfixes, with an empty configuration. Read the message that the same program shows for an invalid skill name, from the program itself.",
+      "confirmed_facts": [
+        "claude plugin marketplace add <source> adds a marketplace from a URL, a path or a GitHub repository.",
+        "claude plugin install <plugin>@<marketplace> installs a plugin from that marketplace.",
+        "This repository's marketplace is named phpfixes and installs one plugin, phpfixes, whose one skill is phpfixes-php2shell.",
+        "A skill that a plugin provides is named plugin:skill. The invalid-skill-name message says skill names match the skill's directory name, or 'plugin:skill' for plugin-qualified skills. Installed as the phpfixes plugin, this skill is phpfixes:phpfixes-php2shell."
+      ]
+    },
+    {
+      "title": "skill-installer, a Codex system skill",
+      "url": "https://github.com/openai/skills/tree/main/skills/.system",
+      "checked_date": "2026-10-23",
+      "method": "Read the skill-installer SKILL.md preinstalled with Codex, and ran its install-skill-from-github.py on a local archive of this repository with its network call replaced.",
+      "confirmed_facts": [
+        "skill-installer is preinstalled with Codex and installs a skill from a GitHub URL of the form https://github.com/<owner>/<repo>/tree/<ref>/<path>.",
+        "It installs into $CODEX_HOME/skills/<skill-name>, which defaults to ~/.codex/skills."
+      ]
+    },
+    {
+      "title": "php2shell (CVE-2026-109618 and CVE-2026-109619): PHP critical vulnerability fixes available",
+      "url": "https://ubuntu.com/blog/php2shell-vulnerability-fixes-available",
+      "checked_date": "2026-10-22",
+      "revision": "Canonical Ubuntu blog; published 2026-10-21",
+      "confirmed_facts": [
+        "Canonical uses the name php2shell for CVE-2026-109618 and CVE-2026-109619.",
+        "Canonical distinguishes installed security packages from applications that still need restarting, including Apache mod_php."
+      ]
+    },
+    {
+      "title": "Security advisory: Critical remote code execution vulnerabilities, update now",
+      "url": "https://www.php.net/archive/2026.php#2026-10-21-5",
+      "checked_date": "2026-10-22",
+      "revision": "2026-10-21",
+      "confirmed_facts": [
+        "PHP upstream fixed releases are 8.2.35, 8.3.36, 8.4.27 and 8.5.12.",
+        "Distributions and LTS vendors may supply backported fixes. PHP 8.1 and older no longer receive PHP project updates.",
+        "Configuration mitigations are partial; updating to a patched build is required for a complete fix."
+      ]
+    },
+    {
+      "title": "RCE via OOM corruption",
+      "url": "https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w",
+      "checked_date": "2026-10-22",
+      "revision": "GHSA-w8hw-w9fx-j79w; published 2026-10-21",
+      "confirmed_facts": [
+        "CVE-2026-109618. Fixed upstream versions: 8.2.35, 8.3.36, 8.4.27, 8.5.12."
+      ]
+    },
+    {
+      "title": "RCE via stale global state",
+      "url": "https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp",
+      "checked_date": "2026-10-22",
+      "revision": "GHSA-6wmf-4rv5-p3rp; published 2026-10-21",
+      "confirmed_facts": [
+        "CVE-2026-109619. Fixed upstream versions: 8.2.35, 8.3.36, 8.4.27, 8.5.12."
+      ]
+    },
+    {
+      "title": "USN-8948-1: PHP vulnerabilities",
+      "url": "https://ubuntu.com/security/notices/USN-8948-1",
+      "checked_date": "2026-10-22",
+      "revision": "USN-8948-1; published 2026-10-21",
+      "confirmed_facts": [
+        "For both CVEs, Ubuntu 24.04 PHP 8.3 is fixed in 8.3.6-0ubuntu0.24.04.13.",
+        "Ubuntu 22.04 PHP 8.1 is fixed in 8.1.2-1ubuntu2.28. Ubuntu 26.04 PHP 8.5 is fixed in 8.5.4-0ubuntu1.5; Ubuntu 26.10 PHP 8.5 is fixed in 8.5.9-0ubuntu2.1.",
+        "Listed packages include CLI, FPM, CGI and the Apache PHP module. An installed fixed package does not alone establish which build a running worker uses."
+      ]
+    },
+    {
+      "title": "CVE-2026-109618",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-109618",
+      "checked_date": "2026-10-22",
+      "revision": "DLA-4848-1; DSA-6574-1",
+      "confirmed_facts": [
+        "Debian 12/bookworm security php8.2 is fixed in 8.2.35-1~deb12u1.",
+        "Debian 13/trixie security php8.4 is fixed in 8.4.27-1~deb13u1."
+      ]
+    },
+    {
+      "title": "CVE-2026-109619",
+      "url": "https://security-tracker.debian.org/tracker/CVE-2026-109619",
+      "checked_date": "2026-10-22",
+      "revision": "DLA-4848-1; DSA-6574-1",
+      "confirmed_facts": [
+        "The same Debian 12 and Debian 13 fixed revisions cover CVE-2026-109619."
+      ]
+    },
+    {
+      "title": "DSA-6574-1",
+      "url": "https://security-tracker.debian.org/tracker/DSA-6574-1",
+      "checked_date": "2026-10-22",
+      "revision": "DSA-6574-1",
+      "confirmed_facts": [
+        "php8.4 in Debian 13/trixie security fixed in 8.4.27-1~deb13u1."
+      ]
+    },
+    {
+      "title": "DLA-4848-1",
+      "url": "https://security-tracker.debian.org/tracker/DLA-4848-1",
+      "checked_date": "2026-10-22",
+      "revision": "DLA-4848-1",
+      "confirmed_facts": [
+        "php8.2 in Debian 12/bookworm security fixed in 8.2.35-1~deb12u1."
+      ]
+    }
+  ]
+}

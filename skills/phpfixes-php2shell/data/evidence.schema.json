@@ -1,0 +1,281 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "authorized": {
+      "const": true
+    },
+    "scope": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "collected_at": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50,
+      "format": "date-time"
+    },
+    "inventory_complete": {
+      "type": "boolean"
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "version-output",
+              "os-release",
+              "installed-package",
+              "repository",
+              "process-mapping",
+              "changelog",
+              "inventory",
+              "build-provenance"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 16000
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "text"
+        ]
+      }
+    },
+    "runtimes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "sapi": {
+            "type": "string",
+            "enum": [
+              "cli",
+              "fpm",
+              "apache2handler",
+              "cgi",
+              "litespeed",
+              "frankenphp",
+              "unknown"
+            ]
+          },
+          "origin": {
+            "type": "string",
+            "enum": [
+              "upstream",
+              "docker-official",
+              "distro",
+              "sury",
+              "remi",
+              "source",
+              "control-panel",
+              "unknown"
+            ]
+          },
+          "os": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "version_id": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 100
+              }
+            },
+            "required": [
+              "id",
+              "version_id"
+            ]
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "uniqueItems": true,
+            "maxItems": 100,
+            "minItems": 1
+          },
+          "php_version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "pattern": "^\\d+\\.\\d+\\.\\d+(?:[-.]?(?:alpha|beta|[Rr][Cc]|dev|snapshot)\\d*)?$"
+          },
+          "package": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "manager": {
+                "type": "string",
+                "enum": [
+                  "apt",
+                  "dpkg",
+                  "deb",
+                  "rpm",
+                  "dnf",
+                  "yum",
+                  "zypper",
+                  "apk",
+                  "brew"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^\\d[A-Za-z0-9.+:~_%\\-]*$"
+              },
+              "repository": {
+                "type": "string",
+                "enum": [
+                  "ubuntu",
+                  "debian",
+                  "sury",
+                  "remi",
+                  "other",
+                  "unknown"
+                ]
+              },
+              "provenance": {
+                "type": "string",
+                "enum": [
+                  "installed-repository-record",
+                  "version-marker",
+                  "unknown"
+                ]
+              },
+              "evidence_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "uniqueItems": true,
+                "maxItems": 100,
+                "minItems": 1
+              }
+            },
+            "required": [
+              "manager",
+              "name",
+              "version",
+              "repository",
+              "provenance",
+              "evidence_ids"
+            ]
+          },
+          "running": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "state": {
+                "type": "string",
+                "enum": [
+                  "observed",
+                  "not-running",
+                  "unknown"
+                ]
+              },
+              "binary_identity": {
+                "type": "string",
+                "enum": [
+                  "matches-installed",
+                  "deleted-or-different",
+                  "unknown"
+                ]
+              },
+              "evidence_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "uniqueItems": true,
+                "maxItems": 100
+              },
+              "php_version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50,
+                "pattern": "^\\d+\\.\\d+\\.\\d+(?:[-.]?(?:alpha|beta|[Rr][Cc]|dev|snapshot)\\d*)?$"
+              },
+              "package_version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^\\d[A-Za-z0-9.+:~_%\\-]*$"
+              }
+            },
+            "required": [
+              "state",
+              "binary_identity",
+              "evidence_ids"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "sapi",
+          "origin",
+          "os",
+          "evidence_ids",
+          "running"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "authorized",
+    "scope",
+    "collected_at",
+    "inventory_complete",
+    "evidence",
+    "runtimes"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PHPFixes supplied PHP2Shell evidence",
+  "description": "Non-secret evidence supplied by an authorized owner. The helper performs additional cross-record and timestamp checks. No collection or server commands."
+}
