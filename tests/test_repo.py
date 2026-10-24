@@ -69,7 +69,7 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(len(market["plugins"]), 1)
         entry = market["plugins"][0]
         self.assertEqual(entry["name"], plugin["name"])
-        self.assertEqual(entry["source"], "./")
+        self.assertEqual(entry["source"], "./plugin")
         self.assertEqual(entry["description"], plugin["description"])
 
     def test_skill_frontmatter_is_valid_for_claude_code_and_codex(self):
@@ -104,13 +104,12 @@ class ManifestTests(unittest.TestCase):
         first = re.search(r"\n## (\d+\.\d+\.\d+) ", changelog).group(1)
         self.assertEqual(first, assess.VERSION)
 
-    def test_the_readme_shows_the_real_vendor_backport_rule_unedited(self):
+    def test_documented_vendor_thresholds_match_bundled_facts(self):
+        facts = json.loads((SKILL / "data/advisories.json").read_text(encoding="utf-8"))
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        source = (SKILL / "php2shell/assess.py").read_text(encoding="utf-8")
-        blocks = re.findall(r"```python\n(.*?)```", readme, re.S)
-        self.assertTrue(blocks)
-        for block in blocks:
-            self.assertIn(block, source)
+        for row in facts["vendor_fixed"]:
+            self.assertIn(row["fixed"], readme)
+            self.assertIn(row["source"], readme)
 
     def test_every_relative_link_in_the_markdown_files_resolves(self):
         for path in sorted(ROOT.rglob("*.md")):
@@ -140,18 +139,6 @@ class ManifestTests(unittest.TestCase):
         self.assertTrue(512 <= width <= 2048, width)
         image_chunks = {b"IHDR", b"PLTE", b"tRNS", b"pHYs", b"IDAT", b"IEND"}
         self.assertLessEqual({kind for kind, _ in chunks}, image_chunks)
-
-    def test_a_product_this_release_does_not_offer_is_named_only_where_its_row_is_dropped(self):
-        for plan in assess.NOT_OFFERED:
-            hits = []
-            for path in repository_files():
-                if path.endswith(".png"):
-                    continue
-                for line in (ROOT / path).read_text(encoding="utf-8").splitlines():
-                    if plan in line.lower():
-                        hits.append((path, line.strip()))
-            self.assertEqual(hits, [("skills/phpfixes-php2shell/php2shell/assess.py",
-                                     'NOT_OFFERED = ("%s",)' % plan)])
 
     def test_the_helper_prints_its_own_version(self):
         process = subprocess.run([sys.executable, "-B", str(SKILL / "php2shell/assess.py"), "--version"],

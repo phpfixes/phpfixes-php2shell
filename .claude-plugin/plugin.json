@@ -1,7 +1,7 @@
 {
   "name": "phpfixes",
-  "version": "1.0.3",
-  "description": "Check whether PHP is fixed for PHP2Shell (CVE-2026-109618, CVE-2026-109619) from evidence you supply: php -v, package versions and the PHP-FPM or Apache workers actually running. Handles Ubuntu and Debian backports. Read-only; it never connects to your server.",
+  "version": "1.1.0",
+  "description": "Check supplied PHP2Shell evidence, normalize local PHP inventories and optionally inspect bounded Linux package/process metadata. Finds multiple PHP branches and stale FPM executables without running PHP or making network requests.",
   "author": {
     "name": "SnowRock, LLC",
     "email": "help@phpfixes.com",

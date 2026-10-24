@@ -1,0 +1,41 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "phpfixes",
+  "version": "1.1.0",
+  "description": "Check supplied PHP build evidence for PHP2Shell fixes and compare local PHP package versions with running workers.",
+  "author": {
+    "name": "SnowRock, LLC",
+    "email": "help@phpfixes.com",
+    "url": "https://phpfixes.com"
+  },
+  "homepage": "https://github.com/phpfixes/phpfixes-php2shell",
+  "repository": "https://github.com/phpfixes/phpfixes-php2shell",
+  "license": "MIT",
+  "keywords": [
+    "php",
+    "php2shell",
+    "package-versions",
+    "php-fpm"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "PHPFixes",
+        "shortDescription": "PHP builds and running workers",
+        "longDescription": "Check supplied PHP build evidence for PHP2Shell fixes. Compare PHP package versions with running workers and show which evidence is missing. Optional local inventory collection runs only after a direct request.",
+        "developerName": "SnowRock, LLC",
+        "category": "Developer Tools",
+        "capabilities": [],
+        "defaultPrompt": [
+          "Check this PHP build for PHP2Shell fixes.",
+          "Compare these PHP packages with running workers.",
+          "Show missing evidence in this local PHP inventory."
+        ],
+        "composerIcon": "./assets/phpfixes-icon-512.png",
+        "logo": "./assets/phpfixes-icon-512.png",
+        "privacyPolicyURL": "https://github.com/phpfixes/phpfixes-php2shell/blob/v1.1.0/PRIVACY.md",
+        "supportURL": "https://github.com/phpfixes/phpfixes-php2shell/blob/v1.1.0/SUPPORT.md"
+      }
+    }
+  }
+}

@@ -35,27 +35,13 @@ sys.path.insert(0, str(HERE))
 from version_compare import (compare_php_versions, deb_split, deb_version_compare, php_branch,
                              rpm_split)
 
-VERSION = "1.0.3"
+VERSION = "1.1.0"
 FACTS = json.loads((HERE.parent / "data" / "advisories.json").read_text(encoding="utf-8"))
 UTC = dt.timezone.utc
 
 MAX_INPUT_BYTES = 256 * 1024
 EVIDENCE_MAX_HOURS = 24
-CATALOG_MAX_MINUTES = 15
 CLOCK_SKEW_MINUTES = 5  # a timestamp up to this far in the future is clock skew, not an error
-
-CATALOG_URL = "https://phpfixes.com/api/services"
-PLANS = {"scan": ("Scan", "/customer?plan=scan", "per_server"),
-         "patch": ("Patch", "/book?plan=patch", "per_server"),
-         "care": ("Care", "/book?plan=care", "per_server_per_year"),
-         "upgrade": ("Upgrade", "/book?plan=upgrade", "quote")}
-# Besides the four plans above, the public catalog may also list quote-only "custom" and "fleet".
-QUOTE_ONLY_EXTRAS = ("custom", "fleet")
-# The catalog may also carry a row for a product this release does not offer. That row is
-# dropped before any check, so it is never shown, linked or selectable.
-NOT_OFFERED = ("stopgap",)
-AVAILABILITY_REASON = {"requires_setup": "setup_required", "unavailable": "service_unavailable",
-                       "quote_required": "quote_required"}
 
 DEB_MANAGERS = ("apt", "dpkg", "deb")
 RPM_MANAGERS = ("rpm", "dnf", "yum", "zypper")
@@ -71,6 +57,10 @@ PROVENANCES = ("installed-repository-record", "version-marker", "unknown")
 RUNNING_STATES = ("observed", "not-running", "unknown")
 BINARY_IDENTITIES = ("matches-installed", "deleted-or-different", "unknown")
 
+CANONICAL_NUMBER = r"(?:0|[1-9][0-9]*)"
+CANONICAL_PHP_RE = re.compile(
+    r"^" + CANONICAL_NUMBER + r"\." + CANONICAL_NUMBER + r"\." + CANONICAL_NUMBER
+    + r"(?:[-.]?(?:alpha|beta|rc|dev|snapshot)(?:0|[1-9][0-9]*)?)?$", re.I | re.ASCII)
 PHP_RE = re.compile(r"^\d+\.\d+\.\d+(?:[-.]?(?:alpha|beta|rc|dev|snapshot)\d*)?$", re.I)
 PKG_RE = re.compile(r"^\d[A-Za-z0-9.+:~_%\-]*$")
 PKG_NAME_RE = re.compile(r"(?:php|libapache2-mod-php|ea-php|alt-php|plesk-php)[A-Za-z0-9.+@_:\-]*")
@@ -127,8 +117,8 @@ def timestamp(value, where):
         if parsed.tzinfo is None:
             raise ValueError()
         return parsed.astimezone(UTC)
-    except (ValueError, TypeError):
-        raise EvidenceError(where + " must be an ISO 8601 time with a timezone")
+    except (ValueError, TypeError, OverflowError):
+        raise EvidenceError(where + " must be a representable ISO 8601 time with a timezone")
 
 
 def unique_pairs(pairs):
@@ -258,6 +248,20 @@ def package_parts(package):
     return "0", re.sub(r"(?:-r\d+|_\d+)$", "", version), ""
 
 
+def canonical_package_release(package):
+    """Require the exact ASCII release identity before any comparator may grant a verdict.
+
+    Comparators intentionally order numeric prefixes. They cannot establish that an alias or
+    private upstream suffix identifies an official release. Revisions remain manager-specific.
+    """
+    raw = package["version"]
+    if ":" in raw:
+        epoch, remainder = raw.split(":", 1)
+        if not re.fullmatch(CANONICAL_NUMBER, epoch, flags=re.ASCII) or ":" in remainder:
+            return False
+    return bool(CANONICAL_PHP_RE.fullmatch(package_parts(package)[1]))
+
+
 def branch_in_package_name(name):
     """'php8.3-fpm' -> '8.3'; 'ea-php83' -> '8.3'; None when the name carries no branch."""
     match = (re.search(r"php(\d)\.(\d+)", name)
@@ -291,6 +295,11 @@ def consistency_problem(runtime):
     package = runtime.get("package")
     version = runtime.get("php_version", "")
     upstream = package_parts(package)[1] if package else ""
+    if ((version and not CANONICAL_PHP_RE.fullmatch(version))
+            or (package and not canonical_package_release(package))):
+        return ("PHP release or package epoch is not a canonical ASCII release identity.",
+                "Exact official release and package records; private upstream suffixes, Unicode "
+                "digits and leading-zero aliases cannot inherit a fix threshold.")
     if package:
         name_branch = branch_in_package_name(package["name"])
         if name_branch and name_branch != php_branch(upstream):
@@ -353,6 +362,43 @@ def vendor_backport_verdict(runtime, result):
         why.append("Package epoch differs from the recorded vendor package lineage.")
         needed.append("Current vendor advisory matching this package epoch and revision.")
         return True
+    # These exact older builds are explicitly listed vulnerable by primary vendor pages.
+    # Do not turn every hypothetical older packaging base into an affected assertion.
+    affected = next((item for item in FACTS.get("vendor_affected", ())
+                     if item["os_id"] == os_info["id"]
+                     and item["os_version_id"] == os_info["version_id"]
+                     and item["package"] == row["package"]
+                     and item["version"] == package["version"]), None)
+    if affected:
+        result.update(status="AFFECTED", source_urls=[affected["source"]])
+        why.append("Vendor advisory explicitly lists installed package %s as vulnerable."
+                   % package["version"])
+        return True
+    if os_info["id"] == "debian" and (
+            upstream != fixed_upstream or not re.fullmatch(
+                r"1~deb%su(?:0|[1-9][0-9]{0,3})" % re.escape(os_info["version_id"]), revision,
+                flags=re.ASCII)):
+        why.append("Debian package is outside the documented upstream base and packaging "
+                   "revision lineage.")
+        needed.append("Current Debian advisory for this exact upstream base and package "
+                      "revision; the bundled threshold cannot establish this build.")
+        return True
+    if os_info["id"] == "ubuntu":
+        if upstream != fixed_upstream:
+            if compare_php_versions(upstream, fixed_upstream) > 0:
+                # A canonical newer release may be judged by the upstream fixed release.
+                why.append("This package has a newer upstream number than the vendor backport row.")
+                return False
+            why.append("Ubuntu package upstream base is outside the documented backport lineage.")
+            needed.append("Current Ubuntu advisory matching this exact upstream base and revision.")
+            return True
+        prefix = re.sub(r"[0-9]+$", "", fixed_revision)
+        if not re.fullmatch(re.escape(prefix) + r"(?:0|[1-9][0-9]{0,3})", revision,
+                            flags=re.ASCII):
+            why.append("Ubuntu package revision is outside the documented vendor update lineage.")
+            needed.append("Current Ubuntu advisory for this exact revision; private suffixes "
+                          "and other packaging lineages do not inherit the bundled threshold.")
+            return True
     if compare_php_versions(upstream, fixed_upstream) > 0:
         # A newer upstream release than the row's is judged by the upstream fix instead.
         why.append("This package has a newer upstream number than the vendor backport row.")
@@ -562,21 +608,6 @@ def assess(data, now=None):
     facts_fresh = 0 <= facts_age_days <= FACTS["max_facts_age_days"]
     runtimes = [assess_runtime(runtime, source_map, evidence_fresh, facts_fresh)
                 for runtime in data["runtimes"]]
-    verdicts = [(r["installed_assessment"], r["running_assessment"]) for r in runtimes]
-    affected = any("AFFECTED" in pair for pair in verdicts)
-    unknown = any("UNKNOWN" in pair for pair in verdicts)
-    if affected:
-        recommendation = "patch"
-    elif unknown or not data["inventory_complete"]:
-        recommendation = "scan"
-    else:
-        recommendation = None
-    if affected:
-        plan_reason = "A repair fits affected package or worker evidence."
-    elif recommendation:
-        plan_reason = "A fuller assessment fits missing runtime, package, or inventory evidence."
-    else:
-        plan_reason = "No paid service is required by these supplied findings."
     return {"skill_version": VERSION, "assessed_at": now.isoformat().replace("+00:00", "Z"),
             "cves": FACTS["cves"], "scope": data["scope"],
             "inventory_complete_claimed": data["inventory_complete"],
@@ -585,121 +616,12 @@ def assess(data, now=None):
             "scope_statement": "Assessment covers only supplied records. It does not establish "
                                "a complete server inventory, internet exposure, absence of "
                                "compromise, or whole-server safety.",
-            "runtimes": runtimes, "proposed_plan": recommendation,
-            "proposed_plan_reason": plan_reason}
-
-
-# --- The optional PHPFixes service link (only with --plan or --catalog) ---------------------
-
-def require_catalog_fields(value, required, where):
-    """Like require_fields, but the error never repeats a field name that the website sent."""
-    # A catalog is a website's response, not the user's evidence. Echoing its unknown keys
-    # would let any text the API adds reach the report, so the error stays generic.
-    if not isinstance(value, dict):
-        raise EvidenceError(where + " must be an object")
-    if value.keys() != set(required):
-        raise EvidenceError(where + " has missing or unsupported fields")
-
-
-def check_service_row(row, plans_seen):
-    require_catalog_fields(row, ("plan", "name", "amountCents", "currency", "unit",
-                                 "availability", "reasonCode"), "service")
-    plan = require_choice(row["plan"], tuple(PLANS) + QUOTE_ONLY_EXTRAS, "catalog plan")
-    if plan in plans_seen:
-        raise EvidenceError("duplicate catalog plan")
-    plans_seen.add(plan)
-    expected_unit = PLANS[plan][2] if plan in PLANS else "quote"
-    if row["currency"] != "usd" or row["unit"] != expected_unit:
-        raise EvidenceError("catalog currency or unit is unsupported")
-    state = require_choice(row["availability"], tuple(AVAILABILITY_REASON), "availability")
-    if row["reasonCode"] != AVAILABILITY_REASON[state]:
-        raise EvidenceError("catalog reason does not match availability")
-    if plan in ("upgrade",) + QUOTE_ONLY_EXTRAS:
-        if state != "quote_required" or row["amountCents"] is not None:
-            raise EvidenceError("quote services must not advertise a checkout price")
-    elif (type(row["amountCents"]) is not int or not 0 <= row["amountCents"] <= 100000000
-          or state == "quote_required" or (plan != "scan" and state != "unavailable")):
-        # This release knows Scan in setup and the other paid plans as unavailable. Anything
-        # else, such as a suddenly "ready" Patch, waits for a reviewed update of this skill.
-        raise EvidenceError("catalog advertises an unsupported service state")
-    return plan
-
-
-def check_catalog(catalog, now):
-    """Return the catalog rows for the four plans, or raise EvidenceError. It fails closed."""
-    require_catalog_fields(catalog, ("schema_version", "url", "fetched_at", "http_status",
-                                     "content_type", "response"), "catalog")
-    fetched_at = timestamp(catalog["fetched_at"], "catalog fetched_at")
-    age_minutes = (now - fetched_at).total_seconds() / 60
-    fresh_success = (type(catalog["schema_version"]) is int and catalog["schema_version"] == 1
-                     and catalog["url"] == CATALOG_URL
-                     and type(catalog["http_status"]) is int and catalog["http_status"] == 200
-                     and catalog["content_type"] == "application/json"
-                     and -CLOCK_SKEW_MINUTES <= age_minutes <= CATALOG_MAX_MINUTES)
-    if not fresh_success:
-        raise EvidenceError("catalog was not a fresh successful JSON response from the fixed "
-                            "public endpoint")
-    require_catalog_fields(catalog["response"], ("services",), "catalog response")
-    rows = catalog["response"]["services"]
-    if isinstance(rows, list):
-        rows = [row for row in rows
-                if not (isinstance(row, dict) and row.get("plan") in NOT_OFFERED)]
-    most_rows = len(PLANS) + len(QUOTE_ONLY_EXTRAS)
-    if not isinstance(rows, list) or not len(PLANS) <= len(rows) <= most_rows:
-        raise EvidenceError("catalog lists an unexpected number of products")
-    available, plans_seen = {}, set()
-    for row in rows:
-        plan = check_service_row(row, plans_seen)
-        if plan in PLANS:
-            available[plan] = row
-    if not set(PLANS).issubset(plans_seen):
-        raise EvidenceError("catalog omits a core product")
-    return available
-
-
-def catalog_handoff(report, selected_plan=None, catalog=None, now=None):
-    now = now or dt.datetime.now(UTC)
-    plan = selected_plan or report["proposed_plan"]
-    available = {}
-    catalog_state, catalog_reason = "unverified", "Live service availability has not been verified."
-    if catalog is not None:
-        try:
-            available = check_catalog(catalog, now)
-            catalog_state = "verified"
-            catalog_reason = ("Current public catalog checked; sign-in, preflight, server consent, "
-                              "and explicit payment remain website steps.")
-        except (EvidenceError, TypeError) as error:
-            available = {}
-            catalog_reason = "Service availability could not be verified: " + str(error)
-    products = []
-    for ident, (name, route, unit) in PLANS.items():
-        row = available.get(ident)
-        product = {"plan": ident, "name": name, "url": "https://phpfixes.com" + route,
-                   "availability": row["availability"] if row else "unverified",
-                   "checkout_claim": "No checkout or payment was started."}
-        if row:
-            product.update(amountCents=row["amountCents"], currency=row["currency"],
-                           unit=row["unit"], reasonCode=row["reasonCode"])
-        products.append(product)
-    if not plan:
-        return {"catalog_state": catalog_state, "catalog_reason": catalog_reason,
-                "selected_plan": plan, "selection_source": "none", "selected_url": None,
-                "selected_availability": None, "products": products,
-                "next_step": "Explain the findings; no purchase is necessary to receive this "
-                             "limited assessment."}
-    return {"catalog_state": catalog_state, "catalog_reason": catalog_reason, "selected_plan": plan,
-            "selection_source": "user" if selected_plan else "assessment_suggestion",
-            "selected_url": "https://phpfixes.com" + PLANS[plan][1],
-            "selected_availability": available.get(plan, {}).get("availability", "unverified"),
-            "products": products,
-            "next_step": "Open the selected product information page if the customer wants to "
-                         "continue. An unavailable or unverified service is not a working "
-                         "checkout. Never substitute another plan silently."}
+            "runtimes": runtimes}
 
 
 # --- Command line ---------------------------------------------------------------------------
 
-def text_report(report, include_handoff=False):
+def text_report(report):
     lines = ["PHPFixes PHP2Shell assessment " + VERSION, "Scope: " + report["scope"],
              report["scope_statement"], ""]
     for runtime in report["runtimes"]:
@@ -708,14 +630,6 @@ def text_report(report, include_handoff=False):
         lines.extend("  " + value for value in runtime["why"] + runtime["running_why"])
         lines.extend("  Needed: " + value for value in runtime["needed_evidence"])
         lines.extend("  Source: " + value for value in runtime["source_urls"])
-    if include_handoff:
-        handoff = report["handoff"]
-        lines.extend(["", report["proposed_plan_reason"], handoff["catalog_reason"]])
-        if handoff["selected_plan"]:
-            lines.append("Selected %s: %s (%s)" % (handoff["selected_plan"],
-                                                    handoff["selected_url"],
-                                                    handoff["selected_availability"]))
-        lines.append(handoff["next_step"])
     return "\n".join(lines) + "\n"
 
 
@@ -727,28 +641,16 @@ def main(argv=None):
     parser.add_argument("--version", action="version", version=VERSION)
     parser.add_argument("--evidence", required=True,
                         help="local evidence JSON matching data/evidence.schema.json")
-    parser.add_argument("--catalog", help="optional local wrapper of a fresh GET from "
-                                          "https://phpfixes.com/api/services")
-    parser.add_argument("--plan", choices=tuple(PLANS),
-                        help="also print the link for this PHPFixes product; it stays selected "
-                             "even if unavailable")
     parser.add_argument("--format", choices=("text", "json"), default="text")
     args = parser.parse_args(argv)
     try:
         data = read_json(args.evidence)
         report = assess(data)
-        catalog = None
-        if args.catalog:
-            try:
-                catalog = read_json(args.catalog)
-            except (EvidenceError, OSError) as error:
-                catalog = {"read_error": str(error)}
-        report["handoff"] = catalog_handoff(report, args.plan, catalog)
         report["input_sha256"] = hashlib.sha256(Path(args.evidence).read_bytes()).hexdigest()
         if args.format == "json":
             sys.stdout.write(json.dumps(report, indent=2, sort_keys=True) + "\n")
         else:
-            sys.stdout.write(text_report(report, include_handoff=bool(args.plan or args.catalog)))
+            sys.stdout.write(text_report(report))
         return 0
     except (EvidenceError, OSError) as error:
         sys.stderr.write("Evidence error: " + str(error) + "\n")

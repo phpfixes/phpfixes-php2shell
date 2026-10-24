@@ -1,0 +1,22 @@
+{
+  "name": "phpfixes",
+  "version": "1.1.0",
+  "description": "Check supplied PHP build evidence for PHP2Shell fixes and compare local PHP package versions with running workers.",
+  "author": {
+    "name": "SnowRock, LLC",
+    "email": "help@phpfixes.com",
+    "url": "https://phpfixes.com"
+  },
+  "homepage": "https://github.com/phpfixes/phpfixes-php2shell",
+  "repository": "https://github.com/phpfixes/phpfixes-php2shell",
+  "license": "MIT",
+  "keywords": [
+    "php",
+    "php2shell",
+    "package-versions",
+    "php-fpm"
+  ],
+  "displayName": "PHPFixes",
+  "icon": "./assets/phpfixes-icon-512.png",
+  "documentationUrl": "https://github.com/phpfixes/phpfixes-php2shell"
+}

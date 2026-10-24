@@ -5,14 +5,14 @@
     "email": "help@phpfixes.com"
   },
   "metadata": {
-    "description": "The PHPFixes plugin for Claude Code: a read-only PHP2Shell check for PHP packages and the workers actually running."
+    "description": "Free PHP2Shell evidence checks and opt-in local Linux PHP inventory."
   },
   "plugins": [
     {
       "name": "phpfixes",
       "displayName": "PHPFixes",
-      "source": "./",
-      "description": "Check whether PHP is fixed for PHP2Shell (CVE-2026-109618, CVE-2026-109619) from evidence you supply: php -v, package versions and the PHP-FPM or Apache workers actually running. Handles Ubuntu and Debian backports. Read-only; it never connects to your server.",
+      "source": "./plugin",
+      "description": "Check supplied PHP2Shell evidence, normalize local PHP inventories and optionally inspect bounded Linux package/process metadata. Finds multiple PHP branches and stale FPM executables without running PHP or making network requests.",
       "category": "security",
       "homepage": "https://github.com/phpfixes/phpfixes-php2shell",
       "tags": [

@@ -1,0 +1,28 @@
+{
+  "name": "phpfixes",
+  "owner": {
+    "name": "SnowRock, LLC",
+    "email": "help@phpfixes.com"
+  },
+  "metadata": {
+    "description": "Free PHP2Shell evidence checks and opt-in local Linux PHP inventory."
+  },
+  "plugins": [
+    {
+      "name": "phpfixes",
+      "displayName": "PHPFixes",
+      "source": "./",
+      "description": "Check supplied PHP2Shell evidence, normalize local PHP inventories and optionally inspect bounded Linux package/process metadata. Finds multiple PHP branches and stale FPM executables without running PHP or making network requests.",
+      "category": "security",
+      "homepage": "https://github.com/phpfixes/phpfixes-php2shell",
+      "tags": [
+        "php",
+        "php2shell",
+        "cve-2026-109618",
+        "cve-2026-109619",
+        "php-fpm",
+        "backports"
+      ]
+    }
+  ]
+}

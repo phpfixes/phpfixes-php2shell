@@ -1,0 +1,216 @@
+{
+  "version": "1.1.0",
+  "files": [
+    {
+      "path": ".agents/plugins/marketplace.json",
+      "type": "regular",
+      "mode": "0644",
+      "size": 355,
+      "sha256": "fe13c2bfe56387d927ff2c569c4efe448140a9cfecf8c8dc295028de05611b4f"
+    },
+    {
+      "path": ".claude-plugin/marketplace.json",
+      "type": "regular",
+      "mode": "0644",
+      "size": 836,
+      "sha256": "6b4c6ddfe851fe8bb091351d0c6d7292515ab8872af71298f4bdebc7571f1f90"
+    },
+    {
+      "path": ".claude-plugin/plugin.json",
+      "type": "regular",
+      "mode": "0644",
+      "size": 680,
+      "sha256": "bb1a0b714ed7d30973d15766df3cb45e6c041c62cc5b3aab207a1684e06908cb"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "type": "regular",
+      "mode": "0644",
+      "size": 3177,
+      "sha256": "7068387ea8a87406609689c55fbf6b952150c392d50693163857295aaa12b999"
+    },
+    {
+      "path": "INSTALL.md",
+      "type": "regular",
+      "mode": "0644",
+      "size": 2637,
+      "sha256": "f266de7a0558f6c3bb96a3c08a4efade6fc1e6e257ca123367d476fb91c2bf4b"
+    },
+    {
+      "path": "LICENSE",
+      "type": "regular",
+      "mode": "0644",
+      "size": 1070,
+      "sha256": "b05e9195d335942d558256ff8f772ebc034f915c3e8ec2d4fa013501ebd9cfbd"
+    },
+    {
+      "path": "PRIVACY.md",
+      "type": "regular",
+      "mode": "0644",
+      "size": 3459,
+      "sha256": "384f73e1ee95afa93536fae5b34bd5cb29cb7371ebfdbeb89bad0e0deb3dc00e"
+    },
+    {
+      "path": "README.md",
+      "type": "regular",
+      "mode": "0644",
+      "size": 7669,
+      "sha256": "729c0b2ce671ea3d042d2c63085e2c2ac75adf14e937bc29b0ddce5fe42f728d"
+    },
+    {
+      "path": "SECURITY.md",
+      "type": "regular",
+      "mode": "0644",
+      "size": 1715,
+      "sha256": "8a543dfd8df7f332699767e2e6ba8b7fd97b33845554af066a06142c23288961"
+    },
+    {
+      "path": "SUPPORT.md",
+      "type": "regular",
+      "mode": "0644",
+      "size": 1241,
+      "sha256": "aa7074afe36a4a24904e6e0e61be2e6860825b9b81a15fb10368263c64a5387a"
+    },
+    {
+      "path": "assets/phpfixes-icon-512.png",
+      "type": "regular",
+      "mode": "0644",
+      "size": 15040,
+      "sha256": "94fed3127626790f1d83a0be218f399f8db4fe504cae527850ca7ed938d0bfd3"
+    },
+    {
+      "path": "plugin.json",
+      "type": "regular",
+      "mode": "0644",
+      "size": 1656,
+      "sha256": "ebdfbb02f8fd367e44d66e48a2eadb79b56f3cc278ea1186d2d4c9136e0598bd"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/LICENSE.txt",
+      "type": "regular",
+      "mode": "0644",
+      "size": 1070,
+      "sha256": "b05e9195d335942d558256ff8f772ebc034f915c3e8ec2d4fa013501ebd9cfbd"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/POLICY.md",
+      "type": "regular",
+      "mode": "0644",
+      "size": 7161,
+      "sha256": "20a1462506872c96e9ba07c7cb532d8b6cbfe52f063c109cf93ee4fc559d5d12"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/SERVICES.md",
+      "type": "regular",
+      "mode": "0644",
+      "size": 860,
+      "sha256": "95eaf96735951046fcde36bbaa749ecc0207ffef73ea7e64408c9a110f7a22b7"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/SKILL.md",
+      "type": "regular",
+      "mode": "0644",
+      "size": 3868,
+      "sha256": "d22a51ebb888ee0c64b40354fcebba0aa16473e50c51ff9876d664e69a4a0d76"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/agents/openai.yaml",
+      "type": "regular",
+      "mode": "0644",
+      "size": 231,
+      "sha256": "9744682880b1bf2d3e50bcae87c6caff1d98792dc36eab878988d430004ec652"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/data/advisories.json",
+      "type": "regular",
+      "mode": "0644",
+      "size": 2309,
+      "sha256": "43479f7a1248f502dc15cc998dda2c51fc184558aa131787c23e576bf520ed5b"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/data/evidence-guide.md",
+      "type": "regular",
+      "mode": "0644",
+      "size": 3695,
+      "sha256": "3d86675c07852d6371e94fb73b3c569ae36316f2374dc1e0d6702ecbe30a7e28"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/data/evidence.schema.json",
+      "type": "regular",
+      "mode": "0644",
+      "size": 7239,
+      "sha256": "64b9946ccd5ac08f01508e8f5e21eb7da2e66e39e093022f8e42d65748fb551b"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/data/inventory-guide.md",
+      "type": "regular",
+      "mode": "0644",
+      "size": 5942,
+      "sha256": "1b5c4f61ab784963918f914902ad6a99dd5940e7b36877e30b992be66a84d111"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/data/inventory.schema.json",
+      "type": "regular",
+      "mode": "0644",
+      "size": 3959,
+      "sha256": "57dfa60e2764750adab52e3b55ee8696b360dcedd881c72469438ed21d9756d4"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/data/source-ledger.json",
+      "type": "regular",
+      "mode": "0644",
+      "size": 7299,
+      "sha256": "22a2e19de7153f3382b8bcd2cc5af39c5104c5fa26f734c557e88d02fe39e13a"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/examples/cli-only.json",
+      "type": "regular",
+      "mode": "0644",
+      "size": 759,
+      "sha256": "d37f59e70f226c0c791dae1354c5e3d3854dc7a2998371996848ed502865cd5e"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/examples/local-inventory.json",
+      "type": "regular",
+      "mode": "0644",
+      "size": 680,
+      "sha256": "401dd8aa9fdb52113864bf8abb9c220af9a3f1a114413d31528fe94b83e09d03"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/examples/mixed-workers.json",
+      "type": "regular",
+      "mode": "0644",
+      "size": 1791,
+      "sha256": "fe1b0caf0711c00f91a82e7cc6330da274185ffeec2feaa643e8709645f3439d"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/examples/ubuntu-backport.json",
+      "type": "regular",
+      "mode": "0644",
+      "size": 1810,
+      "sha256": "4783ac0e36c9b2f843848740c751a2928c616049f33c0cec8852dce8cb753f29"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/php2shell/assess.py",
+      "type": "regular",
+      "mode": "0644",
+      "size": 34619,
+      "sha256": "258a4d360ee629b1d1a256a15f543b1cc2dd18eb55190003f300df8dc3499547"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/php2shell/inventory.py",
+      "type": "regular",
+      "mode": "0644",
+      "size": 27068,
+      "sha256": "b8ecdf7099b737b556b2982936aed9f4c06b9222f2f410bc98c158b8575f222d"
+    },
+    {
+      "path": "skills/phpfixes-php2shell/php2shell/version_compare.py",
+      "type": "regular",
+      "mode": "0644",
+      "size": 3884,
+      "sha256": "f86641bc3eff091b45e15d5f5496d70090a5a88d810c693d9b063cd309b02d3d"
+    }
+  ],
+  "selfReference": "FILES.json and SHA256SUMS are excluded here. SHA256SUMS covers these rows and FILES.json."
+}

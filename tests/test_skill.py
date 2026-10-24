@@ -43,23 +43,6 @@ def with_build_provenance(data):
     return data
 
 
-def catalog():
-    rows = []
-    for plan, (name, route, unit) in assess.PLANS.items():
-        if plan == "upgrade":
-            state = "quote_required"
-        elif plan == "scan":
-            state = "requires_setup"
-        else:
-            state = "unavailable"
-        rows.append({"plan": plan, "name": name, "amountCents": None if plan == "upgrade" else 100,
-                     "currency": "usd", "unit": unit, "availability": state,
-                     "reasonCode": assess.AVAILABILITY_REASON[state]})
-    return {"schema_version": 1, "url": assess.CATALOG_URL, "http_status": 200,
-            "content_type": "application/json", "fetched_at": "2026-10-22T12:00:00Z",
-            "response": {"services": rows}}
-
-
 def run_cli(*args, cwd):
     return subprocess.run([sys.executable, "-B", str(SKILL / "php2shell/assess.py")] + list(args),
                           cwd=str(cwd), universal_newlines=True, stdout=subprocess.PIPE,
@@ -80,13 +63,12 @@ class AssessmentTests(unittest.TestCase):
         self.assertEqual(row["fixed_threshold"], "8.3.6-0ubuntu0.24.04.13")
         self.assertIn("USN-8948-1", row["source_urls"][0])
 
-    def test_a_lower_ubuntu_revision_is_affected_and_suggests_patch(self):
+    def test_a_lower_ubuntu_revision_is_affected(self):
         data = evidence()
         data["runtimes"][0]["package"]["version"] = "8.3.6-0ubuntu0.24.04.12"
         data["runtimes"][0]["running"]["package_version"] = "8.3.6-0ubuntu0.24.04.12"
         result = self.report(data)
         self.assertEqual(result["runtimes"][0]["installed_assessment"], "AFFECTED")
-        self.assertEqual(result["proposed_plan"], "patch")
 
     def test_a_running_package_version_without_an_installed_package_stays_unknown(self):
         for omitted in (False, True):
@@ -102,7 +84,6 @@ class AssessmentTests(unittest.TestCase):
                     report = self.report(data)
                     row = report["runtimes"][0]
                     self.assertEqual(row["running_assessment"], "UNKNOWN")
-                    self.assertEqual(report["proposed_plan"], "scan")
                     self.assertTrue(row["needed_evidence"])
                     expected = "FIXED_EVIDENCE" if origin == "upstream" else "UNKNOWN"
                     self.assertEqual(row["installed_assessment"], expected)
@@ -205,7 +186,6 @@ class AssessmentTests(unittest.TestCase):
         self.assertEqual(row["installed_assessment"], "FIXED_EVIDENCE")
         self.assertEqual(row["running_assessment"], "UNKNOWN")
         self.assertTrue(row["needed_evidence"])
-        self.assertEqual(result["proposed_plan"], "scan")
 
     def test_stale_workers_stay_affected_even_after_the_package_on_disk_is_fixed(self):
         row = self.runtime(example("mixed-workers.json"))
@@ -221,7 +201,6 @@ class AssessmentTests(unittest.TestCase):
         result = self.report(example("cli-only.json"))
         self.assertEqual(result["runtimes"][0]["installed_assessment"], "UNKNOWN")
         self.assertEqual(result["runtimes"][0]["running_assessment"], "CLI_ONLY")
-        self.assertEqual(result["proposed_plan"], "scan")
 
     def test_evidence_that_is_stale_or_from_the_future_cannot_be_fixed(self):
         for capture in ("2026-10-20T12:00:00Z", "2026-10-23T12:00:00Z"):
@@ -298,7 +277,6 @@ class AssessmentTests(unittest.TestCase):
         shown = re.search(r"it prints:\n\n```text\n(.*?)```", readme, re.S).group(1)
         now = dt.datetime(2026, 10, 23, 12, 5, tzinfo=UTC)
         report = assess.assess(example("mixed-workers.json"), now)
-        report["handoff"] = assess.catalog_handoff(report, now=now)
         self.assertEqual(assess.text_report(report), shown)
 
 
@@ -321,135 +299,6 @@ class ComparatorTests(unittest.TestCase):
         self.assertEqual(compare.compare_php_versions("8.5.12RC1", "8.5.12"), -1)
         self.assertEqual(compare.compare_php_versions("8.5.12", "8.5.12RC1"), 1)
         self.assertEqual(compare.php_branch("8.3.36"), "8.3")
-
-
-class WebsiteHandoffTests(unittest.TestCase):
-    def handoff(self, data=None, plan="patch"):
-        return assess.catalog_handoff(assess.assess(evidence(), NOW), plan,
-                                      catalog() if data is None else data, NOW)
-
-    def test_a_chosen_patch_stays_patch_even_while_patch_is_unavailable(self):
-        result = self.handoff()
-        self.assertEqual(result["selected_plan"], "patch")
-        self.assertEqual(result["selected_url"], "https://phpfixes.com/book?plan=patch")
-        self.assertEqual(result["selected_availability"], "unavailable")
-        self.assertEqual({p["plan"] for p in result["products"]}, set(assess.PLANS))
-
-    def test_scan_setup_is_not_payment_or_server_consent(self):
-        result = self.handoff(plan="scan")
-        self.assertEqual(result["selected_availability"], "requires_setup")
-        self.assertEqual(result["selected_url"], "https://phpfixes.com/customer?plan=scan")
-        self.assertIn("explicit payment", result["catalog_reason"])
-
-    def test_a_broken_or_unavailable_catalog_fails_closed_and_shows_no_price(self):
-        services = lambda c: c["response"]["services"]
-        mutations = [lambda c: c.update(http_status=404),
-                     lambda c: c.update(url="https://evil.example/api/services"),
-                     lambda c: c.update(content_type="text/html"),
-                     lambda c: c.update(fetched_at="2026-10-21T12:00:00Z"),
-                     lambda c: services(c).pop(),
-                     lambda c: services(c)[1].update(availability="requires_setup",
-                                                     reasonCode="setup_required"),
-                     lambda c: services(c)[0].update(availability="ready"),
-                     lambda c: services(c)[0].update(checkoutUrl="https://evil.example"),
-                     lambda c: services(c)[0].update(amountCents=True)]
-        for mutate in mutations:
-            with self.subTest(mutate=mutate):
-                data = catalog()
-                mutate(data)
-                result = self.handoff(data)
-                self.assertEqual(result["catalog_state"], "unverified")
-                self.assertEqual(result["selected_plan"], "patch")
-                self.assertTrue(all("amountCents" not in p for p in result["products"]))
-
-    def test_each_of_the_four_plans_keeps_its_exact_link_and_identity(self):
-        self.assertEqual(list(assess.PLANS), ["scan", "patch", "care", "upgrade"])
-        for plan, (_, path, _) in assess.PLANS.items():
-            result = self.handoff(plan=plan)
-            self.assertEqual(result["selected_plan"], plan)
-            self.assertEqual(result["selected_url"], "https://phpfixes.com" + path)
-        self.assertEqual(self.handoff(plan="upgrade")["selected_availability"], "quote_required")
-
-    def test_a_catalog_row_for_a_product_not_offered_is_ignored_and_never_shown(self):
-        hidden = assess.NOT_OFFERED[0]
-        for row in ({"plan": hidden, "name": "x", "amountCents": 100, "currency": "usd",
-                     "unit": "per_server", "availability": "unavailable",
-                     "reasonCode": "service_unavailable"},
-                    {"plan": hidden, "availability": "ready",
-                     "checkoutUrl": "https://evil.example"}):
-            for copies in (1, 2):
-                with self.subTest(row=row, copies=copies):
-                    data = catalog()
-                    data["response"]["services"][2:2] = [dict(row) for _ in range(copies)]
-                    result = self.handoff(data)
-                    self.assertEqual(result["catalog_state"], "verified")
-                    self.assertEqual([p["plan"] for p in result["products"]], list(assess.PLANS))
-                    self.assertNotIn(hidden, json.dumps(result).lower())
-
-    def test_ignoring_that_row_leaves_every_other_check_failing_closed(self):
-        hidden = {"plan": assess.NOT_OFFERED[0]}
-        for mutate in (lambda rows: rows.pop(),
-                       lambda rows: rows.__setitem__(0, hidden),
-                       lambda rows: rows.append(dict(rows[1])),
-                       lambda rows: rows.append({"plan": "bogus"}),
-                       lambda rows: rows[1].update(availability="requires_setup",
-                                                   reasonCode="setup_required")):
-            with self.subTest(mutate=mutate):
-                data = catalog()
-                mutate(data["response"]["services"])
-                data["response"]["services"].append(dict(hidden))
-                result = self.handoff(data)
-                self.assertEqual(result["catalog_state"], "unverified")
-                self.assertTrue(all("amountCents" not in p for p in result["products"]))
-
-    def test_a_catalog_error_never_repeats_a_field_name_the_website_sent(self):
-        for mutate in (lambda c: c["response"]["services"][0].update(unlistedNote="x"),
-                       lambda c: c["response"].update(unlistedKey=[]),
-                       lambda c: c["response"]["services"][0].pop("name")):
-            with self.subTest(mutate=mutate):
-                data = catalog()
-                mutate(data)
-                result = self.handoff(data)
-                self.assertEqual(result["catalog_state"], "unverified")
-                self.assertRegex(result["catalog_reason"], r" has missing or unsupported fields$")
-                self.assertNotIn("unlisted", json.dumps(result).lower())
-                self.assertNotIn("'name'", result["catalog_reason"])
-
-    def test_too_many_catalog_rows_is_a_count_problem_not_a_missing_product(self):
-        data = catalog()
-        for plan in assess.QUOTE_ONLY_EXTRAS + ("bogus",):
-            data["response"]["services"].append(
-                {"plan": plan, "name": plan, "amountCents": None, "currency": "usd",
-                 "unit": "quote", "availability": "quote_required", "reasonCode": "quote_required"})
-        result = self.handoff(data)
-        self.assertEqual(result["catalog_state"], "unverified")
-        self.assertRegex(result["catalog_reason"],
-                         r"catalog lists an unexpected number of products$")
-
-    def test_the_command_line_offers_only_the_four_plans(self):
-        example_file = str(SKILL / "examples/mixed-workers.json")
-        helptext = run_cli("--help", cwd=SKILL)
-        self.assertIn("{scan,patch,care,upgrade}", re.sub(r"\x1b\[[0-9;]*m", "", helptext.stdout))
-        refused = run_cli("--evidence", example_file, "--plan", assess.NOT_OFFERED[0], cwd=SKILL)
-        self.assertEqual(refused.returncode, 2)
-        self.assertEqual(refused.stdout, "")
-        self.assertIn("invalid choice", refused.stderr)
-
-    def test_a_free_result_carries_no_mandatory_purchase_or_price_menu(self):
-        report = assess.assess(evidence(), NOW)
-        report["handoff"] = assess.catalog_handoff(report, now=NOW)
-        output = assess.text_report(report, include_handoff=True)
-        self.assertNotIn("Scan: unverified", output)
-        self.assertNotIn("USD", output)
-        self.assertEqual(report["handoff"]["catalog_state"], "unverified")
-
-    def test_the_text_report_links_a_phpfixes_service_only_with_plan_or_catalog(self):
-        example_file = str(SKILL / "examples/mixed-workers.json")
-        plain = run_cli("--evidence", example_file, cwd=SKILL)
-        chosen = run_cli("--evidence", example_file, "--plan", "patch", cwd=SKILL)
-        self.assertEqual((plain.returncode, chosen.returncode), (0, 0), plain.stderr + chosen.stderr)
-        self.assertNotIn("phpfixes.com/", plain.stdout)
-        self.assertIn("Selected patch: https://phpfixes.com/book?plan=patch", chosen.stdout)
 
 
 if __name__ == "__main__":

@@ -13,7 +13,9 @@ Please do not include real server evidence, credentials, customer data or workin
 ## In scope
 
 - Skill instructions that would lead an assistant to run a command, contact a system or share data beyond what [README.md](README.md) describes.
-- The helper (`skills/phpfixes-php2shell/php2shell/assess.py` and `skills/phpfixes-php2shell/php2shell/version_compare.py`) reading anything beyond its bundled files and the files named on its command line, writing anything beyond its printed output, or reporting `FIXED_EVIDENCE` when the supplied evidence does not support it.
+- Assessment helpers reading beyond bundled files and explicitly supplied JSON, writing files, contacting a network or reporting a fixed finding without supporting evidence.
+- Local inventory collection without explicit `--collect-local --authorized`, reads outside its documented metadata scope, PHP/subprocess execution, network access or secret collection.
+- Inventory normalization inventing repository origin, running versions or complete-server coverage.
 - Release files that do not match `SHA256SUMS` or `FILELIST.txt`.
 
 ## Wrong or outdated findings

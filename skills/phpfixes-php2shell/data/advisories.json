@@ -60,5 +60,21 @@
       "package": "php8.1",
       "source": "https://ubuntu.com/security/notices/USN-8948-1"
     }
+  ],
+  "vendor_affected": [
+    {
+      "os_id": "debian",
+      "os_version_id": "12",
+      "package": "php8.2",
+      "version": "8.2.32-1~deb12u1",
+      "source": "https://security-tracker.debian.org/tracker/DLA-4848-1"
+    },
+    {
+      "os_id": "debian",
+      "os_version_id": "13",
+      "package": "php8.4",
+      "version": "8.4.24-1~deb13u1",
+      "source": "https://security-tracker.debian.org/tracker/DSA-6574-1"
+    }
   ]
 }

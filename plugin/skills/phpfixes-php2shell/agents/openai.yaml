@@ -1,0 +1,4 @@
+interface:
+  display_name: "PHPFixes PHP2Shell"
+  short_description: "Check PHP packages and running worker evidence"
+  default_prompt: "Use $phpfixes-php2shell to check my PHP evidence and explain the next local inspection step."

@@ -116,19 +116,21 @@
     {
       "title": "DSA-6574-1",
       "url": "https://security-tracker.debian.org/tracker/DSA-6574-1",
-      "checked_date": "2026-10-22",
+      "checked_date": "2026-10-23",
       "revision": "DSA-6574-1",
       "confirmed_facts": [
-        "php8.4 in Debian 13/trixie security fixed in 8.4.27-1~deb13u1."
+        "php8.4 in Debian 13/trixie security fixed in 8.4.27-1~deb13u1.",
+        "The advisory explicitly lists Debian 13/trixie php8.4 8.4.24-1~deb13u1 as vulnerable to the two referenced CVEs. This exact affected build is bundled; no other unlisted older base is inferred."
       ]
     },
     {
       "title": "DLA-4848-1",
       "url": "https://security-tracker.debian.org/tracker/DLA-4848-1",
-      "checked_date": "2026-10-22",
+      "checked_date": "2026-10-23",
       "revision": "DLA-4848-1",
       "confirmed_facts": [
-        "php8.2 in Debian 12/bookworm security fixed in 8.2.35-1~deb12u1."
+        "php8.2 in Debian 12/bookworm security fixed in 8.2.35-1~deb12u1.",
+        "The advisory explicitly lists Debian 12/bookworm php8.2 8.2.32-1~deb12u1 as vulnerable to the two referenced CVEs. This exact affected build is bundled; no other unlisted older base is inferred."
       ]
     }
   ]
