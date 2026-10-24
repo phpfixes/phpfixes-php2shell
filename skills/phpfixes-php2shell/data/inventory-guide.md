@@ -1,10 +1,12 @@
 # Local PHP inventory
 
+In the assistant plugin, use the declared PHPFixes MCP tools. Do not run the command examples below through a terminal or code-execution tool. They describe an owner operating standalone helpers separately. The supplied-record tools do not inspect local packages or processes; the collection tool requires a direct local-inspection request and explicit authorization.
+
 The optional inventory helper gives a PHP owner a small list of installed runtime packages and visible PHP processes. It helps find multiple PHP branches, workers using deleted or different executables and gaps that prevent a PHP2Shell decision. It does not execute PHP or discover which website sends requests to which worker.
 
 ## Use saved records offline
 
-Run this from the skill directory:
+For manual owner-operated use, run from the skill directory:
 
 ```text
 python3 -I php2shell/inventory.py --input /absolute/path/inventory.json --format text

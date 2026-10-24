@@ -15,7 +15,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import assess
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 MAX_PACKAGES = 40
 MAX_PROCESSES = 40
 MAX_PIDS = 4096

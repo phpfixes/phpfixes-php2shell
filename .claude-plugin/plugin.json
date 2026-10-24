@@ -1,7 +1,7 @@
 {
   "name": "phpfixes",
-  "version": "1.1.0",
-  "description": "Check supplied PHP2Shell evidence, normalize local PHP inventories and optionally inspect bounded Linux package/process metadata. Finds multiple PHP branches and stale FPM executables without running PHP or making network requests.",
+  "version": "1.2.0",
+  "description": "Check supplied PHP build evidence for PHP2Shell fixes and compare local PHP package versions with running workers.",
   "author": {
     "name": "SnowRock, LLC",
     "email": "help@phpfixes.com",
@@ -13,10 +13,13 @@
   "keywords": [
     "php",
     "php2shell",
-    "cve-2026-109618",
-    "cve-2026-109619",
-    "php-fpm",
-    "backports",
-    "security"
-  ]
+    "package-versions",
+    "php-fpm"
+  ],
+  "displayName": "PHPFixes",
+  "icon": "./assets/phpfixes-icon-512.png",
+  "documentationUrl": "https://github.com/phpfixes/phpfixes-php2shell",
+  "mcpServers": "./.mcp.json",
+  "privacyPolicyUrl": "https://github.com/phpfixes/phpfixes-php2shell/blob/v1.2.0/PRIVACY.md",
+  "supportUrl": "https://github.com/phpfixes/phpfixes-php2shell/blob/v1.2.0/SUPPORT.md"
 }

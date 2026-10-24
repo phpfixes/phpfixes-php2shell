@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "phpfixes",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Check supplied PHP build evidence for PHP2Shell fixes and compare local PHP package versions with running workers.",
   "author": {
     "name": "SnowRock, LLC",
@@ -22,7 +22,7 @@
       "interface": {
         "displayName": "PHPFixes",
         "shortDescription": "PHP builds and running workers",
-        "longDescription": "Check supplied PHP build evidence for PHP2Shell fixes. Compare PHP package versions with running workers and show which evidence is missing. Optional local inventory collection runs only after a direct request.",
+        "longDescription": "Check supplied PHP2Shell build records through declared local tools. Compare PHP packages and running workers without inferring a fix from installed files. Local Linux inventory requires a direct request. Python 3.9+ and a local execution host are required.",
         "developerName": "SnowRock, LLC",
         "category": "Developer Tools",
         "capabilities": [],
@@ -33,9 +33,10 @@
         ],
         "composerIcon": "./assets/phpfixes-icon-512.png",
         "logo": "./assets/phpfixes-icon-512.png",
-        "privacyPolicyURL": "https://github.com/phpfixes/phpfixes-php2shell/blob/v1.1.0/PRIVACY.md",
-        "supportURL": "https://github.com/phpfixes/phpfixes-php2shell/blob/v1.1.0/SUPPORT.md"
-      }
+        "privacyPolicyURL": "https://github.com/phpfixes/phpfixes-php2shell/blob/v1.2.0/PRIVACY.md",
+        "supportURL": "https://github.com/phpfixes/phpfixes-php2shell/blob/v1.2.0/SUPPORT.md"
+      },
+      "requires_local_executor": true
     }
   }
 }

@@ -69,7 +69,7 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(len(market["plugins"]), 1)
         entry = market["plugins"][0]
         self.assertEqual(entry["name"], plugin["name"])
-        self.assertEqual(entry["source"], "./plugin")
+        self.assertEqual(entry["source"], "./")
         self.assertEqual(entry["description"], plugin["description"])
 
     def test_skill_frontmatter_is_valid_for_claude_code_and_codex(self):
@@ -123,7 +123,7 @@ class ManifestTests(unittest.TestCase):
     def test_the_plugin_icon_is_a_square_png_the_plugin_directory_accepts(self):
         # The directory takes a square PNG of 512 to 2048 pixels, under 2 MB. Text chunks could
         # carry tool or path metadata, so only image chunks are allowed.
-        data = (ROOT / ".claude-plugin/icon.png").read_bytes()
+        data = (ROOT / "assets/phpfixes-icon-512.png").read_bytes()
         self.assertEqual(data[:8], b"\x89PNG\r\n\x1a\n")
         self.assertLess(len(data), 2 * 1024 * 1024)
         chunks, offset = [], 8

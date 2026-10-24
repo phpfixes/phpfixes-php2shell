@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "phpfixes": {
+      "type": "stdio",
+      "command": "python3",
+      "args": [
+        "-I",
+        "-B",
+        "${CLAUDE_PLUGIN_ROOT}/skills/phpfixes-php2shell/php2shell/mcp_server.py"
+      ]
+    }
+  }
+}

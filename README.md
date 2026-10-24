@@ -2,11 +2,19 @@
 
 PHPFixes is a free skill for PHP owners and administrators using Codex or Claude Code. It checks supplied PHP2Shell evidence, explains installed and running PHP separately, and can collect a small local Linux inventory when the owner explicitly asks. It helps find multiple PHP branches, deleted or different FPM executables and missing records before an update decision.
 
-Version 1.1.0. The free diagnostic works without a PHPFixes account or purchase. Python 3.9 or later is needed for its optional helpers.
+Version 1.2.0. The free diagnostic works without a PHPFixes account or purchase. Python 3.9 or later runs the declared local MCP server and standalone helpers. The assistant uses the declared MCP tools for executable checks; it does not invoke helpers through a terminal.
 
 Bundled advisory facts were checked on 2026-10-22. They support a positive `FIXED_EVIDENCE` finding for at most 14 days, through 2026-11-05 UTC. Evidence must also be no older than 24 hours. Expired facts or stale records leave positive findings unknown.
 
-## Supplied evidence
+## Supported hosts and execution
+
+This version uses a local MCP server, a program the assistant starts and calls through declared tools. Claude Code and Cowork support local execution; Claude web/mobile chat does not run this local server. Codex local plugin support must be available on the chosen surface. OpenAI public-directory local MCP eligibility requires the submitting organization to be allowlisted; this release does not claim that eligibility or a directory listing.
+
+By default, the skill reads supplied records. Structured assessment and saved-inventory checks use the declared tools. Local metadata collection is a separate tool and needs a direct owner request with explicit authorization. The server starts without inspecting packages/processes and keeps helper execution inside its declared process. It makes no HTTP request or PHPFixes upload.
+
+## Manual supplied-evidence check
+
+The following commands are for an owner running the standalone helpers directly. The assistant skill uses MCP tools instead.
 
 From the skill directory:
 
@@ -17,7 +25,7 @@ python3 php2shell/assess.py --evidence examples/mixed-workers.json
 With the clock pinned to 2026-10-23 at 12:05 UTC, it prints:
 
 ```text
-PHPFixes PHP2Shell assessment 1.1.0
+PHPFixes PHP2Shell assessment 1.2.0
 Scope: Synthetic example: fixed package on disk, stale running workers.
 Assessment covers only supplied records. It does not establish a complete server inventory, internet exposure, absence of compromise, or whole-server safety.
 
@@ -33,7 +41,7 @@ example-fpm (fpm): installed UNKNOWN; running AFFECTED
 
 This example is synthetic. Its worker record identifies an older affected package while the installed package is newer. The installed finding is unknown because the snapshot is more than 24 hours old at the displayed assessment time. Real findings depend on supplied records and current time.
 
-## Local inventory
+## Manual local inventory
 
 For saved minimal metadata:
 
@@ -70,18 +78,18 @@ Debian 12/13 positive comparisons cover only the documented upstream base and re
 
 ## Installation
 
-Install a pinned release or copy the standalone skill. The repository marketplace installs the complete plugin from `plugin/`. For manual ZIP installation, follow INSTALL.md in the extracted plugin folder.
+Install a pinned release or copy the standalone skill. The repository root is the complete plugin with its declared local server. A copied standalone skill can read supplied records; install the full plugin to make its MCP tools available. No terminal fallback is used by the skill. For manual ZIP installation, follow INSTALL.md in the extracted plugin folder.
 
 In Codex, use the skill installer with this pinned path:
 
 ```text
-$skill-installer install https://github.com/phpfixes/phpfixes-php2shell/tree/v1.1.0/skills/phpfixes-php2shell
+$skill-installer install https://github.com/phpfixes/phpfixes-php2shell/tree/v1.2.0/skills/phpfixes-php2shell
 ```
 
 For a pinned source checkout:
 
 ```text
-git clone --depth 1 --branch v1.1.0 https://github.com/phpfixes/phpfixes-php2shell
+git clone --depth 1 --branch v1.2.0 https://github.com/phpfixes/phpfixes-php2shell
 ```
 
 For a local installation, copy only `skills/phpfixes-php2shell` into the selected Codex skills directory or the project's `.claude/skills/` directory. Claude Code can also install this repository as its `phpfixes` plugin. Invoke `/phpfixes:phpfixes-php2shell` for that plugin, `/phpfixes-php2shell` for a copied Claude skill, or `$phpfixes-php2shell` in Codex.
@@ -94,6 +102,6 @@ The diagnostic and inventory helpers work without an account, API key, telemetry
 
 ## Tests and license
 
-Run `python3 -B -m unittest -v` from the repository root. Tests use synthetic evidence and simulated collector reads. They check assessment behavior, malformed-input handling, canonical package identities, collection boundaries and the absence of commerce actions. A test run does not establish a real server's status or a completed assistant conversation.
+The pinned source repository includes tests; the release ZIP excludes them. From the source repository root, run `python3 -B -m unittest -v`. Tests use synthetic evidence and simulated collector reads. They check assessment behavior, malformed-input handling, canonical package identities, collection boundaries and the absence of commerce actions. A test run does not establish a real server's status or a completed assistant conversation.
 
 MIT licensed by SnowRock, LLC. Root [LICENSE](LICENSE) and skill [LICENSE.txt](skills/phpfixes-php2shell/LICENSE.txt) retain the same notice. PHP and distribution advisory sources remain attributed in the source ledger.

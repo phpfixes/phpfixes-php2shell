@@ -1,8 +1,8 @@
-# Install PHPFixes 1.1.0
+# Install PHPFixes 1.2.0
 
-This free plugin checks supplied PHP2Shell evidence and provides an optional local PHP inventory. It needs no PHPFixes account, purchase or model API key. Your assistant account is separate. Python 3.9 or later is needed only to run the bundled helpers.
+This free plugin checks supplied PHP2Shell evidence and provides an optional local PHP inventory. It needs no PHPFixes account, purchase or model API key. Your assistant account is separate. Python 3.9 or later is required for the declared local MCP server. The assistant host starts it locally and calls its three tools. Startup does not inspect packages/processes. This local server is supported in Claude Code and Cowork, not Claude web/mobile chat. OpenAI public-directory local MCP access requires an eligible allowlisted organization; no directory listing is claimed.
 
-Download the release ZIP from https://github.com/phpfixes/phpfixes-php2shell/releases/tag/v1.1.0 and check it against the accompanying SHA256SUMS before extracting it. Keep the extracted plugin folder while using a local marketplace. Installing from this package is separate from public directory availability.
+Download the release ZIP from https://github.com/phpfixes/phpfixes-php2shell/releases/tag/v1.2.0 and check it against the accompanying SHA256SUMS before extracting it. Keep the extracted plugin folder while using a local marketplace. Installing from this package is separate from public directory availability.
 
 Read [privacy](PRIVACY.md) before sharing records and [support](SUPPORT.md) for installation help.
 
@@ -21,11 +21,15 @@ Start a new session. Use /phpfixes:phpfixes-php2shell or ask about PHP2Shell evi
 
 ```sh
 codex plugin marketplace add /absolute/path/to/phpfixes
-codex plugin add phpfixes@phpfixes-local
+codex plugin add phpfixes@phpfixes
 codex plugin list --json
 ```
 
 Start a new session. Invoke $phpfixes-php2shell. Plugins require a supported Codex surface. For a standalone skill, copy skills/phpfixes-php2shell into the project's .agents/skills/ folder instead; standalone skill support differs from plugin support.
+
+## Tool behavior
+
+The declared tools assess supplied evidence, check a supplied inventory or collect bounded local Linux metadata after a direct owner request. The skill never invokes Python, Bash or suggested commands outside the declared server. If tools are unavailable, it can read supplied records directly and reports the missing tool.
 
 ## Use without an assistant
 

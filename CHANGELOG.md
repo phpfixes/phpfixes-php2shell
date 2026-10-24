@@ -2,6 +2,14 @@
 
 Each version is published once. Any change gets a new version and new hashes; a published release is never replaced in place.
 
+## 1.2.0 - 2026-10-23
+
+- Added a declared local stdio MCP server for supplied evidence, saved inventory and explicitly authorized local Linux collection.
+- Kept helper execution inside that declared server. The assistant skill no longer invokes Python or terminal commands directly and has no execution fallback.
+- Kept startup and tool discovery separate from local metadata collection. No public endpoint, remote domain, PHP execution, network request or package/service update is added.
+- Added exact Claude privacy/support listing fields and disclosed desktop/local host requirements and OpenAI local-MCP directory eligibility limits.
+- Package comparison rules, advisory facts and freshness windows are unchanged.
+
 ## 1.1.0 - 2026-10-23
 
 - Added an offline inventory normalizer and explicitly opted-in bounded Linux metadata collector. Neither executes PHP or makes network requests.

@@ -11,8 +11,8 @@
     {
       "name": "phpfixes",
       "displayName": "PHPFixes",
-      "source": "./plugin",
-      "description": "Check supplied PHP2Shell evidence, normalize local PHP inventories and optionally inspect bounded Linux package/process metadata. Finds multiple PHP branches and stale FPM executables without running PHP or making network requests.",
+      "source": "./",
+      "description": "Check supplied PHP build evidence for PHP2Shell fixes and compare local PHP package versions with running workers.",
       "category": "security",
       "homepage": "https://github.com/phpfixes/phpfixes-php2shell",
       "tags": [

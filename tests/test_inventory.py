@@ -154,7 +154,7 @@ class InventoryTests(unittest.TestCase):
                 cwd=folder, text=True, capture_output=True)
             self.assertEqual(process.returncode, 0, process.stderr)
             report = json.loads(process.stdout)
-            self.assertEqual(report["tool_version"], "1.1.0")
+            self.assertEqual(report["tool_version"], "1.2.0")
             self.assertEqual(list(Path(folder).iterdir()), [])
 
     def test_linux_collector_records_deleted_identity_without_reading_disallowed_paths(self):
