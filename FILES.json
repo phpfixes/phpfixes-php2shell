@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.2.1",
   "files": [
     {
       "path": ".agents/plugins/marketplace.json",
@@ -20,7 +20,7 @@
       "type": "regular",
       "mode": "0644",
       "size": 895,
-      "sha256": "10c4d80659af6e0bed40f189ff4753eb18031249dc7fdea4b1f63ac5335d8ea0"
+      "sha256": "146d3b9508e3a27a32306eeb2639b917924d7e12e42431c424276783a150e0e5"
     },
     {
       "path": ".mcp.json",
@@ -33,15 +33,15 @@
       "path": "CHANGELOG.md",
       "type": "regular",
       "mode": "0644",
-      "size": 3897,
-      "sha256": "171e1ec49fb4c6de61f226a980f188b9bd32011ca6deba85fcc7c989b2ad2f02"
+      "size": 4125,
+      "sha256": "9367c9e1a0c2dcc398105313502dff118b7153d2b887bd8dc4cf4922cbf2574a"
     },
     {
       "path": "INSTALL.md",
       "type": "regular",
       "mode": "0644",
       "size": 3294,
-      "sha256": "462e23adbb6ed2689d152030f72c7662788d1f1ac79402e0ae98d1dc501c50d8"
+      "sha256": "6f1d95c3f6e21de80bfc020b18f7ccd4e43f35706f44bc9b4ecab0411357183e"
     },
     {
       "path": "LICENSE",
@@ -62,7 +62,7 @@
       "type": "regular",
       "mode": "0644",
       "size": 8969,
-      "sha256": "452bb80e96c0d9d12e28991a9ef66e6d6f5ad2e49d790b6fed40e4e70858a01a"
+      "sha256": "e9e68665503d47d8706065f53c0996adc3c302e6e0a58911117a76cad9ca1d81"
     },
     {
       "path": "SECURITY.md",
@@ -82,8 +82,8 @@
       "path": "assets/phpfixes-icon-512.png",
       "type": "regular",
       "mode": "0644",
-      "size": 15040,
-      "sha256": "94fed3127626790f1d83a0be218f399f8db4fe504cae527850ca7ed938d0bfd3"
+      "size": 117528,
+      "sha256": "3d72de9fbfcc7b7eef0efcc19f10e8e68d196005828cb80066d8b44641821b8e"
     },
     {
       "path": "mcp.json",
@@ -97,7 +97,7 @@
       "type": "regular",
       "mode": "0644",
       "size": 1742,
-      "sha256": "f16b1a5d1bd2518302f9c4be67d18e6390c69747507d05c5515a2e727fbcdad7"
+      "sha256": "b3400b7e2358d5ad29d8e7764f3b6c309b520b6d65c31a99d4587627be739d8e"
     },
     {
       "path": "skills/phpfixes-php2shell/LICENSE.txt",
@@ -209,21 +209,21 @@
       "type": "regular",
       "mode": "0644",
       "size": 34619,
-      "sha256": "a5cb2250a0ac79e93c2b4efd506d7efff003af51aae64ca3e3dfbab309d1d7f1"
+      "sha256": "475cd8cd7923849ea5896a2061ba447369fe5cd3c058cd496ffe9afd3c29add2"
     },
     {
       "path": "skills/phpfixes-php2shell/php2shell/inventory.py",
       "type": "regular",
       "mode": "0644",
       "size": 27068,
-      "sha256": "053084df7d7d8c244bd3ee465eadc4556b0f4d6b0fabd7e050377e07664cdee8"
+      "sha256": "be474e296492e2e185a3346912302bd91372d90be532f396c74e39bad02ba5de"
     },
     {
       "path": "skills/phpfixes-php2shell/php2shell/mcp_server.py",
       "type": "regular",
       "mode": "0644",
       "size": 14403,
-      "sha256": "c59af461e2c41543542f7a44db6d682a4e601ba874c3a2eb139418c407292340"
+      "sha256": "4c9970b66e6fb1c436ccfd9e19da2f09a040d5b02675e0bd8faf18bf6b40fe6a"
     },
     {
       "path": "skills/phpfixes-php2shell/php2shell/version_compare.py",

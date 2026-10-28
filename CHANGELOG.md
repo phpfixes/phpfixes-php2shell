@@ -2,6 +2,11 @@
 
 Each version is published once. Any change gets a new version and new hashes; a published release is never replaced in place.
 
+## 1.2.1 - 2026-10-28
+
+- Uses the selected PHPFixes mouse company icon in Codex and Claude plugin metadata.
+- Updates version markers and release links. Diagnostic code, permissions, advisory facts and licenses stay unchanged.
+
 ## 1.2.0 - 2026-10-23
 
 - Added a declared local stdio MCP server for supplied evidence, saved inventory and explicitly authorized local Linux collection.

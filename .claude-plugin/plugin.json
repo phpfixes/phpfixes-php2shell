@@ -1,6 +1,6 @@
 {
   "name": "phpfixes",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Check supplied PHP build evidence for PHP2Shell fixes and compare local PHP package versions with running workers.",
   "author": {
     "name": "SnowRock, LLC",
@@ -20,6 +20,6 @@
   "icon": "./assets/phpfixes-icon-512.png",
   "documentationUrl": "https://github.com/phpfixes/phpfixes-php2shell",
   "mcpServers": "./.mcp.json",
-  "privacyPolicyUrl": "https://github.com/phpfixes/phpfixes-php2shell/blob/v1.2.0/PRIVACY.md",
-  "supportUrl": "https://github.com/phpfixes/phpfixes-php2shell/blob/v1.2.0/SUPPORT.md"
+  "privacyPolicyUrl": "https://github.com/phpfixes/phpfixes-php2shell/blob/v1.2.1/PRIVACY.md",
+  "supportUrl": "https://github.com/phpfixes/phpfixes-php2shell/blob/v1.2.1/SUPPORT.md"
 }

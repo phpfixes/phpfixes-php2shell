@@ -13,7 +13,7 @@ import sys
 
 sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
-SERVER_VERSION = "1.2.0"
+SERVER_VERSION = "1.2.1"
 PROTOCOL_VERSIONS = ("2025-11-25", "2025-06-18")
 MAX_MESSAGE_BYTES = 256 * 1024
 MAX_RESPONSE_BYTES = 1024 * 1024

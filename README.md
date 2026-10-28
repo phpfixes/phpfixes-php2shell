@@ -2,7 +2,7 @@
 
 PHPFixes is a free skill for PHP owners and administrators using Codex or Claude Code. It checks supplied PHP2Shell evidence, explains installed and running PHP separately, and can collect a small local Linux inventory when the owner explicitly asks. It helps find multiple PHP branches, deleted or different FPM executables and missing records before an update decision.
 
-Version 1.2.0. The free diagnostic works without a PHPFixes account or purchase. Python 3.9 or later runs the declared local MCP server and standalone helpers. The assistant uses the declared MCP tools for executable checks; it does not invoke helpers through a terminal.
+Version 1.2.1. The free diagnostic works without a PHPFixes account or purchase. Python 3.9 or later runs the declared local MCP server and standalone helpers. The assistant uses the declared MCP tools for executable checks; it does not invoke helpers through a terminal.
 
 Bundled advisory facts were checked on 2026-10-22. They support a positive `FIXED_EVIDENCE` finding for at most 14 days, through 2026-11-05 UTC. Evidence must also be no older than 24 hours. Expired facts or stale records leave positive findings unknown.
 
@@ -25,7 +25,7 @@ python3 php2shell/assess.py --evidence examples/mixed-workers.json
 With the clock pinned to 2026-10-23 at 12:05 UTC, it prints:
 
 ```text
-PHPFixes PHP2Shell assessment 1.2.0
+PHPFixes PHP2Shell assessment 1.2.1
 Scope: Synthetic example: fixed package on disk, stale running workers.
 Assessment covers only supplied records. It does not establish a complete server inventory, internet exposure, absence of compromise, or whole-server safety.
 
@@ -83,13 +83,13 @@ Install a pinned release or copy the standalone skill. The repository root is th
 In Codex, use the skill installer with this pinned path:
 
 ```text
-$skill-installer install https://github.com/phpfixes/phpfixes-php2shell/tree/v1.2.0/skills/phpfixes-php2shell
+$skill-installer install https://github.com/phpfixes/phpfixes-php2shell/tree/v1.2.1/skills/phpfixes-php2shell
 ```
 
 For a pinned source checkout:
 
 ```text
-git clone --depth 1 --branch v1.2.0 https://github.com/phpfixes/phpfixes-php2shell
+git clone --depth 1 --branch v1.2.1 https://github.com/phpfixes/phpfixes-php2shell
 ```
 
 For a local installation, copy only `skills/phpfixes-php2shell` into the selected Codex skills directory or the project's `.claude/skills/` directory. Claude Code can also install this repository as its `phpfixes` plugin. Invoke `/phpfixes:phpfixes-php2shell` for that plugin, `/phpfixes-php2shell` for a copied Claude skill, or `$phpfixes-php2shell` in Codex.

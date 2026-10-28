@@ -35,7 +35,7 @@ sys.path.insert(0, str(HERE))
 from version_compare import (compare_php_versions, deb_split, deb_version_compare, php_branch,
                              rpm_split)
 
-VERSION = "1.2.0"
+VERSION = "1.2.1"
 FACTS = json.loads((HERE.parent / "data" / "advisories.json").read_text(encoding="utf-8"))
 UTC = dt.timezone.utc
 

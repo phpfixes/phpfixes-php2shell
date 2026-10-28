@@ -76,7 +76,7 @@ class ServerTests(unittest.TestCase):
                 response = mcp.Server().handle(initialize(version))["result"]
                 self.assertEqual(response["protocolVersion"], version)
                 self.assertEqual(response["capabilities"], {"tools": {"listChanged": False}})
-                self.assertEqual(response["serverInfo"], {"name": "phpfixes-local", "version": "1.2.0"})
+                self.assertEqual(response["serverInfo"], {"name": "phpfixes-local", "version": "1.2.1"})
 
     def test_newer_revision_negotiates_legacy_without_claiming_mcp_v2(self):
         response = self.server.handle(initialize("2026-07-28"))["result"]
